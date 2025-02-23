@@ -2,6 +2,7 @@
 library(readr)
 library(readxl)
 library(magrittr)
+library(dplyr)
 library(ca)
 library(xtable)
 library(FactoMineR)
@@ -14,12 +15,19 @@ library(plotly)
 # Criando os vetores para cada coluna
 
 # Tabela 03
-EFPeu <- c(18,5,13,8,4,8)
-EPMoutro <- c(27,29,15,14,15,10)
-ManComp <- c(7,1,2,4,1,3)
-AtrCausa <- c(4,12,12,18,12,18)
-NaoClass <- c(12,5,6,6,20,10)
-NsabeNI <- c(2,1,3,3,4,3)
+Discorda_Totalmente <- c(10,18)
+Discorda_Um_Pouco <- c(24,74)
+Concorda_Um_Pouco <- c(21,46)
+Concorda_Totalmente <- c(117,259)
+
+# Tabela 04
+AutoMaximização <- c(12,11,1,1)
+AutoControle <- c(1,1,1,1)
+Emotividade <- c(4,4,1,1)
+Expectativas <- c(3,1,1,1)
+Outros <- c(3,4,1,1)
+NãoClass <- c(8,7,1,1)
+NãoSabe <- c(1,1,1,1)
 
 
 # Tabela 04
@@ -31,12 +39,12 @@ Orgulho <- c(46,26,7,17)
 Vergonha <- c(36,30,17,13)
 
 # Tabela 5
-ExpressãoFacial <- c(11,8,4,1,2,3)
-ManiFCorporal <- c(7,9,11,7,3,15)
-ManiFOral <- c(2,5,6,12,5,6)
-Contexto <- c(25,24,19,26,23,17)
-NãoClass <- c(7,5,12,5,13,8)
-NsabeNI <- c(1,2,1,2,7,4)
+EFPeu <- c(14,8,10,5,3,13)
+EPMoutro <- c(21,24,16,19,9,16)
+ManComp <- c(3,3,3,1,1,3)
+AtrCausa <- c(8,13,13,16,14,7)
+NãoClass <- c(5,5,11,4,18,8)
+NsabeNI <- c(2,1,6,8,8,6)
 
 
 # Tabela 6
@@ -63,13 +71,13 @@ NsabeNI <- c(6,5,6,6,8,5)
 
 
 # Tabela 7
-Mensão_Mãe <- c(32,25,16,5,4,4,3,2,1,1,1)
-Mensão_Pai <- c(15,13,7,1,1,1,2,2,1,1,1)
+Mensão_Mãe <- c(49,2,4,1,1)
+Mensão_Pai <- c(34,7,3,2,5)
 
 
 # Tabela 9
-Mensão_Mãe <- c(27,24,14,11,6,5,4,3)
-Mensão_Pai <- c(12,9,8,3,3,4,1,3)
+Mensão_Mãe <- c(13,4,1,40,5)
+Mensão_Pai <- c(19,7,20,3,2)
 
 
 
@@ -80,27 +88,67 @@ Mensão_Pai <- c(12,9,8,3,3,4,1,3)
 
 
 # Tabela 08
-nomes_linhas <- c("Estou","Sorrir1","Feliz","Conversar","Abraçar",
-                  "NãoRespondeu","Escola","Brincar")
+nomes_linhas <- c("AutoMaximização",
+                  "Autocontrole",
+                  "Emotividade",
+                  "ExpectativasSociais",
+                  "Outros",
+                  "NãoSabe")
 
 # Tabela 07
-nomes_linhas <- c("Brincar","Sorrir","Feliz","Conversar","Abraçar",
-                  "NãoRespondeu","Escola","Liberdade","Chorar","Dançar","Passear")
+nomes_linhas <- c("Centradas no Cuidador", 
+                  "Centrada no Contexto", 
+                  "Centrada na Criança", 
+                  "Outros",
+                  "Não Sabe")
+
+nomes_linhas <- c("Educar/Orientar", 
+                  "Manter Relações Pessoais", 
+                  "Prover Condições Materiais", 
+                  "Outros",
+                  "Não Sabe")
+
 # Tabela 05
-nomes_linhas <- c("Alegria","Tristeza","Raiva","Medo","Orgulho","Vergonha")
+nomes_linhas <- c("Alegria",
+                  "Tristeza",
+                  "Raiva",
+                  "Medo",
+                  "Orgulho",
+                  "Vergonha")
 
 # Tabela 04
 nomes_linhas <- c("NemPouco_Mãe","NemPouco_Pai","Muito_Mãe","Muito_Pai")
 
 # Tabela 03
-nomes_linhas <- c("Alegria", "Tristeza", "Raiva", "Medo", "Orgulho", "Vergonha")
+nomes_linhas <- c("Autonomo","Relacionado")
+
+nomes_linhas <- c("Mensão_Mãe", "Mensão_Pai")
+
+nomes_linhas <- c("19 |--- 24", 
+                  "25 |--- 44",
+                  "45 |--- 59",
+                  "60 ou +")
+
+nomes_linhas <- c("NãoALFA", 
+                  "EFI",
+                  "EFC",
+                  "EMI",
+                  "EMC",
+                  "ESI",
+                  "ESC")
+
+nomes_linhas <- c("0 |--- 18", 
+                  "19|--- 29",
+                  "30|--- 39",
+                  "40|--- 45")
+
 #------------------------------------------------------------------------------#
 
 #------------------------------------------------------------------------------#
 # Criando o data frame com os dados
 
 #Tabela 07
-dados_completo <- data.frame(Mensão_Mãe, Mensão_Pai)
+dados_completo <- data.frame(NemPouco_Mãe,NemPouco_Pai,Muito_Mãe,Muito_Pai)
 
 # tabela 13
 dados_completo <- data.frame(Pessoal,Conexão,Genérico,NãoClass,NsabeNI)
@@ -112,7 +160,22 @@ dados_completo <- data.frame(ExpressãoFacial, ManiFCorporal, ManiFOral, Context
 dados_completo <- data.frame(Alegria,Tristeza,Raiva,Medo,Orgulho,Vergonha)
 
 # Tabela 03
-dados_completo <- data.frame(EFPeu, EPMoutro, ManComp, AtrCausa, NaoClass, NsabeNI)
+dados_completo <- data.frame(Discorda_Totalmente, 
+                             Discorda_Um_Pouco, 
+                             Concorda_Um_Pouco, 
+                             Concorda_Totalmente)
+
+dados_completo <- data.frame(Mensão_Mãe,Mensão_Pai)
+
+
+dados_completo <- data.frame(AutoMaximização,
+                             AutoControle,
+                             Emotividade, 
+                             Expectativas, 
+                             Outros, 
+                             NãoClass, 
+                             NãoSabe)
+
 #------------------------------------------------------------------------------#
 
 
@@ -122,8 +185,19 @@ rownames(dados_completo) <- nomes_linhas
 # Exibindo o objeto com todos os dados
 print(dados_completo)
 
+
 Fumante_CA <- CA(dados_completo, graph = FALSE)
 summary(Fumante_CA)
+
+
+Fumante_CA$eig
+
+
+
+
+
+
+
 #------------------------------------------------------------------------------#
 
 #------------------------------------------------------------------------------#
@@ -157,9 +231,9 @@ plot(Fumante_CA)
 
 # Função para calcular a estatística Beta
 
-chi_quadrado <-  58.48136
-Linha <- 6
-Coluna <- 5
+chi_quadrado <-  7.912136
+Linha <- 4
+Coluna <- 7
 
 calcular_beta <- function(chi_quadrado, Linha, Coluna) {
   
